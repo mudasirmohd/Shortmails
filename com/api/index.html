@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  ​
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  ​<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <title>Quickwordz</title>
+  <!-- style -->
+  <style>
+    #result {
+      /* border-style:  double; */
+    height: 200px;
+    }
+
+    #title {
+      text-align: end;
+      background-color: blue;
+      color: white;
+      height: 15px;
+    }
+
+    #row {
+      background-color: blue;
+      color: white;
+
+    }
+    #summary {
+      color: blue;
+
+      }
+    #label {
+      color: blue;
+      }
+    #subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: blue;
+      font-weight: bold;
+    }
+
+    #butn:hover {
+      background-image: none;
+      background-color: red;
+    }
+  </style>
+  <!-- /style -->
+</head>
+
+<body class="container">
+  <div class="row" id="row">
+    <div class="col-md-7">
+      <h2 id="title">Quickwordz</h2>
+
+      ​
+    </div>
+    <div class="col-md-5">
+      <div class="spinner-grow text-light"></div>
+    </div>
+  </div>
+  <p id="subtitle"><u><i>The summarizer engine</i></u></p>
+  <form id="summary-form">
+    <div class="form-group">
+      <label id="label" for="textToBeSummarized">Enter the email text to be summarized
+        <i class="fa fa-file"></i>
+       </label>
+      <textarea class="form-control" id="textToBeSummarized" rows="5" oninput="delSummary()"></textarea>
+    </div>
+    <button id="butn" type="submit" class="btn btn-primary mb-2">Summarize</button>
+  </form>
+  <div class="spinner-border" role="status" id="spinner" style="display:none;">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <div>
+    <br/>
+   <div style="color:grey;"id="details">
+      <h5 style="font-weight:bold ;font-size:13px;" ><i>To :
+        <span style="font-weight:normal ;color:grey;"id="email_to"></span></i></h5>
+    <h5 style="font-weight:bold ;font-size:13px;" ><i>From :
+      <span style="font-weight:normal ;color:grey;" id="email_from"></span></i></h5>
+    <h5 style="font-weight:bold ;font-size:13px;" ><i>Subject   :
+      <span style="font-weight:normal ;color:grey;"  id="email_subject"></span></i></h5>
+     <h5 style="font-weight:bold ;font-size:13px;" ><i>Date :
+       <span  style="font-weight:normal ;color:grey;" id="email_date"></span></h5></h5>
+   </div>
+
+
+    <br />
+    <h4 id="summary"><b>Summary</b></h4>
+    <textarea class="form-control" id="result" rows="5"></textarea>
+  </div>
+  ​
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#details').hide();
+      $("#summary-form").submit(function (e) {
+        var value = $("#textToBeSummarized").val();
+        var data = { "text": value }
+        var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "/tse/",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "content-type": "application/json",
+          },
+          "processData": false,
+          "data": JSON.stringify(data)
+        }
+        $('#spinner').show();
+        $.ajax(settings).done(function (response) {
+          $("#result").val(response.summary)
+          $('#details').show();
+           $("#email_subject").text(response.email_subject)
+            $("#email_from").text(response.email_from)
+             $("#email_to").text(response.email_to)
+              $("#email_date").text(response.email_date)
+
+
+        }).fail(function (error) {
+          $("#result").val("Couldn't generate summary", error)
+        });
+        $('#spinner').hide();
+        e.preventDefault();
+      });
+    });
+  function delSummary() {
+    $("#result").val("")
+  }
+  </script>
+</body>
+
+</html>
